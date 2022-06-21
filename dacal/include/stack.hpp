@@ -27,6 +27,7 @@ namespace dacal
         {
             return _size;
         }
+
     private:
         Container _container;
         std::size_t _size{};
