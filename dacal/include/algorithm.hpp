@@ -1,10 +1,10 @@
 #ifndef DACAL_ALGORITHM_HPP
 #define DACAL_ALGORITHM_HPP
 
+#include <type_traits>
 #include "utils.hpp"
 #include "quick_sort.hpp"
 #include "iterator.hpp"
-#include <type_traits>
 
 namespace dacal
 {
@@ -32,16 +32,16 @@ namespace dacal
         return _container.rend();
     }
 
-    template<InputIterator InputIter , class UnaryFunction>
-    [[maybe_unused]] void for_each(InputIter _first , InputIter _last , const UnaryFunction& _func)
+    template<InputIterator InIter , class UnaryFunction>
+    [[maybe_unused]] void for_each(InIter _first , InIter _last , const UnaryFunction& _func)
     {
         for ( ; _first != _last; ++_first) {
             _func(*_first);
         }
     }
 
-    template<InputIterator InputIter , class T>
-    [[maybe_unused]] [[nodiscard]] InputIter find(InputIter _first , InputIter _last  , const T& _value)
+    template<InputIterator InIter , class T>
+    [[maybe_unused]] [[nodiscard]] InIter find(InIter _first , InIter _last  , const T& _value)
     {
         for (; _first != _last; ++_first) {
             if (*_first == _value) {
@@ -51,8 +51,8 @@ namespace dacal
         return _last;
     }
 
-    template<InputIterator InputIter , class UnaryPredicate>
-    [[maybe_unused]] [[nodiscard]] InputIter find_if(InputIter _first , InputIter _last  , const UnaryPredicate& _predicate)
+    template<InputIterator InIter , class UnaryPredicate>
+    [[maybe_unused]] [[nodiscard]] InIter find_if(InIter _first , InIter _last  , const UnaryPredicate& _predicate)
     {
         for ( ; _first != _last; ++_first) {
             if (_predicate(*_first)) {
@@ -90,8 +90,8 @@ namespace dacal
         return dacal::find_if(_first , _last , _predicate) != _last;
     }
 
-    template< InputIterator InputIter , class T , class BinaryOperation = dacal::plus<T> >
-    [[maybe_unused]] T accumulate(InputIter _first , InputIter _last , T _init , const BinaryOperation& _op = dacal::plus<T>())
+    template< InputIterator InIter , class T , class BinaryOperation = dacal::plus<T> >
+    [[maybe_unused]] T accumulate(InIter _first , InIter _last , T _init , const BinaryOperation& _op = dacal::plus<T>())
     {
         for ( ; _first != _last; ++_first) {
             _init = _op(dacal::move(_init) , dacal::move(*_first));
@@ -100,16 +100,16 @@ namespace dacal
     }
 
     template<RandomAccessIterator RandIter , class Compare = dacal::less<typename RandIter::value_type>>
-    [[maybe_unused]] void qsort(RandIter _begin, RandIter _end , const Compare& _compare = dacal::less<typename RandIter::value_type>{})
+    [[maybe_unused]] void qsort(RandIter _first, RandIter _last , const Compare& _compare = dacal::less<typename RandIter::value_type>{})
     {
-        detail::qsort_helper(_begin, 0, (_end - _begin) - 1 , _compare);
+        detail::qsort_helper(_first, 0, (_last - _first) - 1 , _compare);
     }
 
-    template<InputIterator InputIter>
-    [[maybe_unused]] typename InputIter::difference_type distance(InputIter _first , InputIter _last)
+    template<InputIterator InIter>
+    [[maybe_unused]] typename InIter::difference_type distance(InIter _first , InIter _last)
     {
-        typename InputIter::difference_type _result = 0;
-        if constexpr (std::is_same_v<random_access_iterator_tag , typename InputIter::iterator_category>) {
+        typename InIter::difference_type _result = 0;
+        if constexpr (std::is_same_v<random_access_iterator_tag , typename InIter::iterator_category>) {
             return _last - _first;
         } else {
             for (; _first != _last; ++_first, ++_result);
@@ -117,8 +117,8 @@ namespace dacal
         }
     }
 
-    template<InputIterator InIter , OutputIterator OuIter>
-    [[maybe_unused]] OuIter copy(InIter _first , InIter _last , OuIter _d_first)
+    template<InputIterator InIter , OutputIterator OutIter>
+    [[maybe_unused]] OutIter copy(InIter _first , InIter _last , OutIter _d_first)
     {
         for (; _first != _last; ++_first , ++_d_first) {
             *_d_first = *_first;
