@@ -5,7 +5,7 @@ namespace dacal
 {
     template<class T1 , class T2> struct [[maybe_unused]] pair
     {
-        [[maybe_unused]] pair(const T1& first , const  T2& second)
+        [[maybe_unused]] pair(const T1& first , const T2& second)
             : _first(first) , _second(second) {}
 
         T1 _first {};
@@ -21,10 +21,11 @@ namespace dacal
     template<int I , class T1 , class T2>
     [[maybe_unused]] auto get(pair<T1 , T2>& p)
     {
-       if constexpr      (I == 0) { return p._first;  }
-       else if constexpr (I == 1) { return p._second; }
-       else                       { return "none";    }
+        static_assert(I >= 0 && I <= 1 , "Invalid offset I!");
+        if constexpr      (I == 0) { return p._first;  }
+        else if constexpr (I == 1) { return p._second; }
     }
-}
+
+} // namespace dacal
 
 #endif // DACAL_PAIR_HPP
