@@ -1,17 +1,16 @@
 #ifndef DACAL_UTILITY_HPP
 #define DACAL_UTILITY_HPP
 
+#include <cstdint>
+
 namespace dacal
 {
-    using size_t = unsigned long;
-    //using difference_t = size_t;
-
-    template<class T> struct remove_reference      { using type = T; }; //  T = int   -> type = int
-    template<class T> struct remove_reference<T&>  { using type = T; }; //  T = int&  -> type = int
-    template<class T> struct remove_reference<T&&> { using type = T; }; //  T = int&& -> type = int
+    template<class T> struct remove_reference      { using type = T; };  //  T = int   -> type = int
+    template<class T> struct remove_reference<T&>  { using type = T; };  //  T = int&  -> type = int
+    template<class T> struct remove_reference<T&&> { using type = T; };  //  T = int&& -> type = int
 
     template<class T>
-    [[maybe_unused]] constexpr typename remove_reference<T>::type&& /*!!*/ move(T &&_arg) noexcept
+    [[maybe_unused]] constexpr typename remove_reference<T>::type&& move(T&& _arg) noexcept
     {
          /*
              * In this case after argument passing T = T& and if we substitute T with T& we have T&&& which
@@ -19,13 +18,13 @@ namespace dacal
 	     * T reference at compile-time. This is possible via remove_reference struct.
          * */
 	return
-        static_cast<typename remove_reference<T>::type&&>(_arg); /*!!*/
+        static_cast<typename remove_reference<T>::type&&>(_arg);
     }
 
     template<class T>
     [[maybe_unused]] void swap(T& _object_A , T& _object_B) noexcept
     {
-	auto _temp = move(_object_A);
+        auto _temp = move(_object_A);
         _object_A  = move(_object_B);
         _object_B  = move(_temp);
     }	    
@@ -33,9 +32,9 @@ namespace dacal
     template<class T , class U = T>
     [[maybe_unused]] [[nodiscard]] T exchange(T& _object , U&& _new_value)
     {
-        auto _old_value_ = dacal::move(_object);//move(_object);
+        auto _old_value_ = dacal::move(_object);
         _object          = _new_value;
-	return _old_value_;
+        return _old_value_;
     }
 
     template<class T> struct [[maybe_unused]] less
@@ -104,19 +103,19 @@ namespace dacal
 
     template<class T> struct hash {};
 
-    template<> struct hash<int>
+    template<> struct [[maybe_unused]] hash<int>
     {
-        constexpr size_t operator()(const int& _val) const noexcept
+        uint64_t operator()(const int& _val) const noexcept
         {
             return ((_val | 0b111001010011010) << 12) % 10;
         }
     };
 
-    template<> struct hash<const char*>
+    template<> struct [[maybe_unused]] hash<const char*>
     {
-        size_t operator()(const char* _val) const noexcept
+        uint64_t operator()(const char* _val) const noexcept
         {
-            unsigned long hash_val = 5381;
+            uint64_t hash_val = 5381;
 
             for (; *_val != '\0'; _val++)
             {
@@ -126,21 +125,20 @@ namespace dacal
         }
     };
 
-    template<class T> struct hash<T*>
+    template<class T> struct [[maybe_unused]] hash<T*>
     {
-        constexpr size_t operator()(const T _ptr) const noexcept
+        uint64_t operator()(const T& _ptr) const noexcept
         {
-            return ((&_ptr - static_cast<T*>(nullptr) << 12));
+            return reinterpret_cast<uint64_t>(&_ptr);
         }
     };
 
 } // namespace dacal
 
 // red-black tree utils
-
 namespace detail
 {
-    enum class color { black = 0, red };
+    enum class [[maybe_unused]] color { black = 0, red };
 
     template<class T>
     struct rb_tree_node
@@ -175,11 +173,12 @@ namespace detail
         }
 
         T _data;
-        color _color{};
+        [[maybe_unused]] color _color{};
         rb_tree_node<T> *_parent{};
         rb_tree_node<T> *_left_child{};
         rb_tree_node<T> *_right_child{};
     };
-}
+
+} // namespace detail
 
 #endif // DACAL_UTILITY_HPP
