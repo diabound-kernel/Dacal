@@ -19,7 +19,7 @@ namespace dacal
 
         [[maybe_unused]] [[nodiscard]] T pop()
         {
-	        _size--;
+	    _size--;
             return _container.pop_back();
         }
 
