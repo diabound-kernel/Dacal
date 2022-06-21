@@ -173,7 +173,7 @@ namespace detail
         }
 
         T _data;
-        [[maybe_unused]] color _color{};
+        color _color{};
         rb_tree_node<T> *_parent{};
         rb_tree_node<T> *_left_child{};
         rb_tree_node<T> *_right_child{};
