@@ -180,8 +180,7 @@ namespace detail
 
         T* _ptr;
     };
-
-
+    
 } // namespace detail
 
 namespace dacal
