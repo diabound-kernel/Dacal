@@ -66,23 +66,23 @@ namespace dacal
     template<class Container>
     struct [[maybe_unused]] insert_iterator : base_iterator<output_iterator_tag , void , std::size_t , void , void>
     {
-        explicit insert_iterator() : _container(nullptr) {}
-        explicit insert_iterator(Container& container) : _container(&container) {}
+        [[maybe_unused]] explicit insert_iterator() : _container(nullptr) {}
+        [[maybe_unused]] explicit insert_iterator(Container& container) : _container(&container) {}
 
-        insert_iterator& operator=(const typename Container::value_type& data)
+        [[maybe_unused]] insert_iterator& operator=(const typename Container::value_type& data)
         {
             _container->insert(data);
             return *this;
         }
 
-        insert_iterator& operator++()
+        [[maybe_unused]] insert_iterator& operator++()
         {
             return *this;
         }
 
-        auto operator++([[maybe_unused]] int i ) -> insert_iterator {}
+        [[maybe_unused]] auto operator++([[maybe_unused]] int i ) -> insert_iterator {}
 
-        insert_iterator& operator*()
+        [[maybe_unused]] insert_iterator& operator*()
         {
             return *this;
         }
@@ -93,23 +93,23 @@ namespace dacal
     template<class Container>
     struct [[maybe_unused]] back_insert_iterator : base_iterator<output_iterator_tag , void , std::size_t , void , void>
     {
-        explicit back_insert_iterator() : _container(nullptr) {}
-        explicit back_insert_iterator(Container& container) : _container(&container) {}
+        [[maybe_unused]] explicit back_insert_iterator() : _container(nullptr) {}
+        [[maybe_unused]] explicit back_insert_iterator(Container& container) : _container(&container) {}
 
-        back_insert_iterator& operator=(const typename Container::value_type& data)
+        [[maybe_unused]] back_insert_iterator& operator=(const typename Container::value_type& data)
         {
             _container->push_back(data);
             return *this;
         }
 
-        back_insert_iterator& operator++()
+        [[maybe_unused]] back_insert_iterator& operator++()
         {
             return *this;
         }
 
-        auto operator++([[maybe_unused]] int i ) -> back_insert_iterator {}
+        [[maybe_unused]] auto operator++([[maybe_unused]] int i ) -> back_insert_iterator {}
 
-        back_insert_iterator& operator*()
+        [[maybe_unused]] back_insert_iterator& operator*()
         {
             return *this;
         }
@@ -135,10 +135,10 @@ namespace dacal
     public:
         using iterator = typename Base::reverse_iterator;
 
-        explicit reverse_view(Base& base) : _base(&base) {}
+        [[maybe_unused]] explicit reverse_view(Base& base) : _base(&base) {}
 
-        iterator begin()  { return _base->rbegin(); }
-        iterator end()    { return _base->rend();   }
+        [[maybe_unused]] iterator begin()  { return _base->rbegin(); }
+        [[maybe_unused]] iterator end()    { return _base->rend();   }
     private:
         Base *_base;
     };
@@ -150,28 +150,28 @@ namespace detail
     template<class Iter>
     struct container_reverse_iterator :
             dacal::base_iterator <typename Iter::iterator_category , typename Iter::value_type,
-                                    typename Iter::difference_type   , typename Iter::pointer   , typename Iter::reference >
+                                  typename Iter::difference_type   , typename Iter::pointer   , typename Iter::reference >
     {
         [[maybe_unused]] explicit container_reverse_iterator(Iter iter) : _iter(iter) {}
 
-        auto operator*()
+        [[maybe_unused]] auto operator*()
         {
             return *_iter;
         }
 
-        container_reverse_iterator& operator++()
+        [[maybe_unused]] container_reverse_iterator& operator++()
         {
             --_iter;
             return *this;
         }
 
-        auto operator++(int) -> container_reverse_iterator
+        [[maybe_unused]] auto operator++(int) -> container_reverse_iterator
         {
             _iter--;
             return *this;
         }
 
-        bool operator!=(const container_reverse_iterator& rhs)
+        [[maybe_unused]] bool operator!=(const container_reverse_iterator& rhs)
         {
             return this->_iter != rhs._iter;
         }
